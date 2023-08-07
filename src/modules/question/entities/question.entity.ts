@@ -1,0 +1,30 @@
+import { Answer } from '@modules/answer/entities/answer.entity';
+import { Contest } from '@modules/contest/entities/contest.entity';
+import {
+	Column,
+	Entity,
+	ManyToOne,
+	OneToMany,
+	PrimaryGeneratedColumn,
+} from 'typeorm';
+
+@Entity()
+export class Question {
+	@PrimaryGeneratedColumn('uuid')
+	id: string;
+
+	@Column()
+	name: string;
+
+	@Column()
+	desc: string;
+
+	@Column()
+	point: number;
+
+	@ManyToOne(() => Contest, (contest) => contest.question)
+	contest: Contest;
+
+	@OneToMany(() => Answer, (answer) => answer.question)
+	answer: Answer;
+}
