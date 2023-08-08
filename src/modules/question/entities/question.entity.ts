@@ -22,6 +22,9 @@ export class Question {
 	@Column()
 	point: number;
 
+	@Column({ nullable: true })
+	right_answer: string;
+
 	@ManyToOne(() => Contest, (contest) => contest.question)
 	contest: Contest;
 

@@ -19,6 +19,7 @@ export class Contest {
 	@Column()
 	contestName: string;
 
+
 	@Column({ default: true })
 	isLoading: boolean;
 
@@ -27,7 +28,7 @@ export class Contest {
 
 	@OneToMany(() => Question, (question) => question.contest)
 	question: Question;
-
+  
 	@DeleteDateColumn()
 	@Exclude()
 	deletedAt: Date;
