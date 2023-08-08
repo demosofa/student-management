@@ -1,6 +1,8 @@
-import { IsString } from 'class-validator';
+import { ROLE } from '@common/enums';
+import { IsNotEmpty, IsString } from 'class-validator';
 
 export class CreateRoleDto {
+	@IsNotEmpty()
 	@IsString()
-	roleName: string;
+	name: ROLE;
 }

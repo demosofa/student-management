@@ -3,17 +3,21 @@ import { AuthController } from './auth.controller';
 import { IAuthService } from './auth.interface';
 import { AuthService } from './auth.service';
 import { UserService } from '../user/user.service';
-import { USER_SERVICE } from '../user/user.interface';
 import { UserModule } from '../user/user.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from '../user/entities/user.entity';
+import { IUserService } from '@modules/user/user.interface';
+import { RoleModule } from '@modules/role/role.module';
+import { RoleService } from '@modules/role/role.service';
+import { Role } from '@modules/role/entities/role.entity';
 
 @Module({
-	imports: [UserModule, TypeOrmModule.forFeature([User])],
+	imports: [RoleModule, UserModule, TypeOrmModule.forFeature([Role, User])],
 	controllers: [AuthController],
 	providers: [
 		{ useClass: AuthService, provide: IAuthService },
-		{ useClass: UserService, provide: USER_SERVICE },
+		{ useClass: UserService, provide: IUserService },
+		RoleService,
 	],
 })
 export class AuthModule {}

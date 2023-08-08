@@ -1,6 +1,6 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
-import { TestInterceptor } from './common/interceptors/test.interceptor';
+import { VoidInterceptor } from './common/interceptors/void.interceptor';
 import { ValidationPipe } from '@nestjs/common';
 
 declare const module: any;
@@ -8,7 +8,7 @@ declare const module: any;
 async function bootstrap() {
 	const app = await NestFactory.create(AppModule);
 
-	app.useGlobalInterceptors(new TestInterceptor());
+	app.useGlobalInterceptors(new VoidInterceptor());
 
 	app.useGlobalPipes(
 		new ValidationPipe({

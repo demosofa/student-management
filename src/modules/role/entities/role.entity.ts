@@ -1,6 +1,7 @@
 import { User } from '@modules/user/entities/user.entity';
 import { IsNotEmpty, IsString } from 'class-validator';
 import {
+	BaseEntity,
 	Column,
 	CreateDateColumn,
 	Entity,
@@ -10,17 +11,17 @@ import {
 } from 'typeorm';
 
 @Entity()
-export class Role {
+export class Role extends BaseEntity {
 	@PrimaryGeneratedColumn()
-	id: string;
+	id: number;
 
 	@IsNotEmpty()
 	@IsString()
-	@Column()
-	roleName: string;
+	@Column({ unique: true })
+	name: string;
 
 	@OneToMany(() => User, (user) => user.role)
-	user: User;
+	user: User[];
 
 	@CreateDateColumn()
 	createdAt: string;
