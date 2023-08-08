@@ -39,7 +39,7 @@ export class QuestionController {
 	update(
 		@Param('id') id: string,
 		@Body() updateQuestionDto: UpdateQuestionDto
-	): Promise<ResponseItem<Question>> {
+	) {
 		return this.questionService.update(id, updateQuestionDto);
 	}
 

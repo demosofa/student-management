@@ -9,6 +9,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Question } from './entities/question.entity';
 import { Repository } from 'typeorm';
 import { ResponseItem } from './dto/ResponseItem.dto';
+import { Contest } from '@modules/contest/entities/contest.entity';
 
 @Injectable()
 export class QuestionService {
@@ -22,9 +23,21 @@ export class QuestionService {
 			return question.point;
 		} else return 0;
 	}
-	async create(createQuestionDto: Partial<Question>) {
-		const createQuestion = await this.questionRepos.create(createQuestionDto);
-		return await this.questionRepos.save(createQuestion);
+	async create(createQuestionDto: CreateQuestionDto) {
+		try {
+			const contest = await Contest.findOneBy({
+				id: createQuestionDto.contestId,
+			});
+			const question = this.questionRepos.create(createQuestionDto);
+
+			// return question;
+			return this.questionRepos.save({
+				...question,
+				contest,
+			});
+		} catch (error) {
+			throw new BadRequestException(error.message);
+		}
 	}
 
 	async findAll() {
@@ -51,23 +64,20 @@ export class QuestionService {
 		}
 	}
 
-	async update(
-		id: string,
-		updateQuestionDto: UpdateQuestionDto
-	): Promise<ResponseItem<Question>> {
+	async update(id: string, updateQuestionDto: UpdateQuestionDto) {
 		try {
-			const updateQuestion = await this.questionRepos.update(
-				id,
-				updateQuestionDto
-			);
-			if (!updateQuestion) {
-				throw new NotFoundException();
-			}
-
-			const question: Question = await this.questionRepos.findOne({
-				where: { id },
+			const contest = await Contest.findOneBy({
+				id: updateQuestionDto.contestId,
 			});
-			return new ResponseItem<Question>(question, 'Success');
+
+			delete updateQuestionDto.contestId;
+			const oldData = await this.questionRepos.findOneBy({ id });
+
+			return this.questionRepos.save({
+				...oldData,
+				...updateQuestionDto,
+				contest,
+			});
 		} catch (error) {
 			throw new BadRequestException(error.message);
 		}

@@ -13,4 +13,7 @@ export class CreateQuestionDto {
 
 	@IsEmpty()
 	right_answer: string;
+
+	@IsString()
+	contestId: string;
 }
