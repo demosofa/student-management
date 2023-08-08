@@ -23,10 +23,10 @@ export class Contest {
 	isLoading: boolean;
 
 	@ManyToMany(() => User, (user) => user.contest)
-	user: User;
+	user: User[];
 
 	@OneToMany(() => Question, (question) => question.contest)
-	question: Question;
+	question: Question[];
 
 	@DeleteDateColumn()
 	@Exclude()

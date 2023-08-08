@@ -22,7 +22,7 @@ export class User {
 	role: Role;
 
 	@ManyToMany(() => Contest, (contest) => contest.user)
-	contest: Contest;
+	contest: Contest[];
 
 	@Column()
 	username: string;

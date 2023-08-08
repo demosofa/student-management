@@ -24,7 +24,7 @@ export class AnswerController {
 	@Post()
 	// @Role(ROLE.TEACHER)
 	// @UseGuards(AuthGuard, RoleGuard)
-	create(@Body() createAnswerDto: CreateAnswerDto): Promise<Answer> {
+	create(@Body() createAnswerDto: CreateAnswerDto) {
 		return this.answerService.create(createAnswerDto);
 	}
 
@@ -45,10 +45,7 @@ export class AnswerController {
 	@Patch(':id')
 	// @Role(ROLE.TEACHER)
 	// @UseGuards(AuthGuard, RoleGuard)
-	update(
-		@Param('id') id: string,
-		@Body() updateAnswerDto: UpdateAnswerDto
-	): Promise<Answer> {
+	update(@Param('id') id: string, @Body() updateAnswerDto: UpdateAnswerDto) {
 		return this.answerService.update(id, updateAnswerDto);
 	}
 

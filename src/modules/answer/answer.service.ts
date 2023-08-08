@@ -8,6 +8,7 @@ import { Repository } from 'typeorm';
 import { CreateAnswerDto } from './dto/create-answer.dto';
 import { UpdateAnswerDto } from './dto/update-answer.dto';
 import { Answer } from './entities/answer.entity';
+import { Question } from '@modules/question/entities/question.entity';
 
 @Injectable()
 export class AnswerService {
@@ -16,10 +17,18 @@ export class AnswerService {
 		private readonly answerRepository: Repository<Answer>
 	) {}
 
-	create(createAnswerDto: CreateAnswerDto): Promise<Answer> {
+	async create(createAnswerDto: CreateAnswerDto) {
 		try {
+			const question = await Question.findOneBy({
+				id: createAnswerDto.questionId,
+			});
 			const answer = this.answerRepository.create(createAnswerDto);
-			return this.answerRepository.save(answer);
+
+			// return answer;
+			return this.answerRepository.save({
+				...answer,
+				question,
+			});
 		} catch (error) {
 			throw new BadRequestException(error.message);
 		}
@@ -45,15 +54,19 @@ export class AnswerService {
 		}
 	}
 
-	async update(id: string, updateAnswerDto: UpdateAnswerDto): Promise<Answer> {
-		const answer = await this.answerRepository.findOneBy({ id });
-		if (!answer) {
-			throw new NotFoundException();
-		}
+	async update(id: string, updateAnswerDto: UpdateAnswerDto) {
+		const question = await Question.findOneBy({
+			id: updateAnswerDto.questionId,
+		});
 
-		answer.answer = updateAnswerDto.answer;
+		delete updateAnswerDto.questionId;
+		const oldData = await this.answerRepository.findOneBy({ id });
 
-		return this.answerRepository.save(answer);
+		return this.answerRepository.save({
+			...oldData,
+			...updateAnswerDto,
+			question,
+		});
 	}
 
 	async remove(id: string) {

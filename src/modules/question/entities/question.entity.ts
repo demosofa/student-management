@@ -1,6 +1,7 @@
 import { Answer } from '@modules/answer/entities/answer.entity';
 import { Contest } from '@modules/contest/entities/contest.entity';
 import {
+	BaseEntity,
 	Column,
 	Entity,
 	ManyToOne,
@@ -9,7 +10,7 @@ import {
 } from 'typeorm';
 
 @Entity()
-export class Question {
+export class Question extends BaseEntity {
 	@PrimaryGeneratedColumn('uuid')
 	id: string;
 
@@ -29,5 +30,5 @@ export class Question {
 	contest: Contest;
 
 	@OneToMany(() => Answer, (answer) => answer.question)
-	answer: Answer;
+	answer: Answer[];
 }
