@@ -9,6 +9,9 @@ export class Answer {
 	@Column()
 	answer: string;
 
+	@Column({ default: false })
+	isRight: boolean;
+
 	@ManyToOne(() => Question, (question) => question.answer)
 	question: Question;
 }
