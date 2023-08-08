@@ -24,4 +24,7 @@ export class Contest {
 
 	@OneToMany(() => Question, (question) => question.contest)
 	question: Question;
+
+	@Column()
+	nameContest: string;
 }
