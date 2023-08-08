@@ -1,6 +1,7 @@
-import { IsNotEmpty } from 'class-validator';
+import { IsNotEmpty, Length } from 'class-validator';
 
 export class CreateAnswerDto {
-	@IsNotEmpty()
-	answer: string;
+	@IsNotEmpty({ message: 'ko được để rỗng' })
+	@Length(5)
+	answer?: string;
 }
