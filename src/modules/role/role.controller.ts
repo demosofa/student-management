@@ -6,10 +6,12 @@ import {
 	Patch,
 	Param,
 	Delete,
+	ParseIntPipe,
 } from '@nestjs/common';
 import { RoleService } from './role.service';
 import { CreateRoleDto } from './dto/create-role.dto';
 import { UpdateRoleDto } from './dto/update-role.dto';
+import { ROLE } from '@common/enums';
 
 @Controller('role')
 export class RoleController {
@@ -25,13 +27,16 @@ export class RoleController {
 		return this.roleService.findAll();
 	}
 
-	@Get(':id')
-	findOne(@Param('id') id: string) {
-		return this.roleService.findOne(id);
+	@Get(':name')
+	findOne(@Param('name') name: ROLE) {
+		return this.roleService.findOne(name);
 	}
 
 	@Patch(':id')
-	update(@Param('id') id: string, @Body() updateRoleDto: UpdateRoleDto) {
+	update(
+		@Param('id', ParseIntPipe) id: number,
+		@Body() updateRoleDto: UpdateRoleDto
+	) {
 		return this.roleService.update(id, updateRoleDto);
 	}
 

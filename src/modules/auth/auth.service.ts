@@ -6,14 +6,15 @@ import {
 } from '@nestjs/common';
 import { IAuthService } from './auth.interface';
 import { LoginUserDto, RegisterUserDto } from './dto';
-import { IUserService, USER_SERVICE } from '../user/user.interface';
+import { IUserService } from '../user/user.interface';
 import { hashSync, compareSync } from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
+import { ROLE } from '@common/enums';
 
 @Injectable()
 export class AuthService implements IAuthService {
 	constructor(
-		@Inject(USER_SERVICE) private userService: IUserService,
+		@Inject(IUserService) private userService: IUserService,
 		private jwtService: JwtService
 	) {}
 
@@ -23,16 +24,17 @@ export class AuthService implements IAuthService {
 		const { password, id, username, role } = user;
 		const check = compareSync(loginUserDto.password, password);
 		if (!check) throw new UnauthorizedException();
-		return this.jwtService.signAsync({ id, username, role });
+		return this.jwtService.signAsync({ id, username, role: role.name });
 	}
 
-	async register(registerUserDto: RegisterUserDto) {
+	async register(targetRole: ROLE, registerUserDto: RegisterUserDto) {
 		const user = await this.userService.findOne(registerUserDto.username);
 		if (user) throw new BadRequestException();
 		registerUserDto.password = hashSync(registerUserDto.password, 10);
 		const { id, username, role } = await this.userService.create(
+			targetRole,
 			registerUserDto
 		);
-		return this.jwtService.signAsync({ id, username, role });
+		return this.jwtService.signAsync({ id, username, role: role.name });
 	}
 }
