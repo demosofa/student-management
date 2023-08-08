@@ -9,6 +9,7 @@ import {
 } from 'typeorm';
 import { Role } from '@modules/role/entities/role.entity';
 import { Contest } from '@modules/contest/entities/contest.entity';
+import { IsNotEmpty } from 'class-validator';
 
 @Entity()
 export class User {
@@ -24,7 +25,8 @@ export class User {
 	@ManyToMany(() => Contest, (contest) => contest.user)
 	contest: Contest[];
 
-	@Column()
+	@IsNotEmpty()
+	@Column({ unique: true })
 	username: string;
 
 	@Column('text')
