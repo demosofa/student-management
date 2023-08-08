@@ -1,7 +1,10 @@
 import { Question } from '@modules/question/entities/question.entity';
 import { User } from '@modules/user/entities/user.entity';
+import { Exclude } from 'class-transformer';
 import {
 	Column,
+	CreateDateColumn,
+	DeleteDateColumn,
 	Entity,
 	ManyToMany,
 	OneToMany,
@@ -14,7 +17,8 @@ export class Contest {
 	id: string;
 
 	@Column()
-	contestname: string;
+	contestName: string;
+
 
 	@Column({ default: true })
 	isLoading: boolean;
@@ -24,7 +28,15 @@ export class Contest {
 
 	@OneToMany(() => Question, (question) => question.contest)
 	question: Question;
+  
+	@DeleteDateColumn()
+	@Exclude()
+	deletedAt: Date;
 
-	@Column()
-	nameContest: string;
+	@CreateDateColumn()
+	@Exclude()
+	createdAt: Date;
+
+	@Column({ type: 'timestamp' })
+	closedAt: string;
 }

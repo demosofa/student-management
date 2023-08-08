@@ -10,6 +10,7 @@ import {
 import { DbConfig, JwtConfig } from './config';
 import { TestMiddleware } from './common/middlewares/test.middleware';
 import { ConfigModule } from '@nestjs/config';
+import { ScheduleModule } from '@nestjs/schedule';
 
 @Module({
 	imports: [
@@ -22,6 +23,7 @@ import { ConfigModule } from '@nestjs/config';
 		ContestModule,
 		QuestionModule,
 		AnswerModule,
+		ScheduleModule.forRoot(),
 	],
 })
 export class AppModule implements NestModule {
