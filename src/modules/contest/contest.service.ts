@@ -4,7 +4,7 @@ import { UpdateContestDto } from './dto/update-contest.dto';
 import { Repository } from 'typeorm';
 import { Contest } from './entities/contest.entity';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Cron, SchedulerRegistry } from '@nestjs/schedule';
+import { SchedulerRegistry } from '@nestjs/schedule';
 
 @Injectable()
 export class ContestService {

@@ -11,7 +11,7 @@ import {
 import { ContestService } from './contest.service';
 import { CreateContestDto } from './dto/create-contest.dto';
 import { UpdateContestDto } from './dto/update-contest.dto';
-import { Role } from '@common/decorators/Role.decorator';
+import { Roles } from '@common/decorators/Roles.decorator';
 import { ROLE } from '@common/enums';
 import { AuthGuard, RoleGuard } from '@common/guards';
 
@@ -38,7 +38,7 @@ export class ContestController {
 	}
 
 	@Patch(':id')
-	@Role(ROLE.TEACHER)
+	@Roles(ROLE.TEACHER)
 	@UseGuards(AuthGuard, RoleGuard)
 	update(@Param('id') id: string, @Body() updateContestDto: UpdateContestDto) {
 		return this.contestService.update(id, updateContestDto);

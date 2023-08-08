@@ -12,7 +12,7 @@ import {
 import { AnswerService } from './answer.service';
 import { CreateAnswerDto } from './dto/create-answer.dto';
 import { UpdateAnswerDto } from './dto/update-answer.dto';
-import { Role } from '@common/decorators/Role.decorator';
+import { Roles } from '@common/decorators/Roles.decorator';
 import { ROLE } from '@common/enums';
 import { Answer } from './entities/answer.entity';
 import { AuthGuard, RoleGuard } from '@common/guards';

@@ -10,7 +10,7 @@ import {
 import { QuestionService } from './question.service';
 import { CreateQuestionDto } from './dto/create-question.dto';
 import { UpdateQuestionDto } from './dto/update-question.dto';
-import { Role } from '@common/decorators/Role.decorator';
+import { Roles } from '@common/decorators/Roles.decorator';
 import { ROLE } from '@common/enums';
 import { ResponseItem } from './dto/ResponseItem.dto';
 import { Question } from './entities/question.entity';
@@ -19,7 +19,7 @@ import { Question } from './entities/question.entity';
 export class QuestionController {
 	constructor(private readonly questionService: QuestionService) {}
 
-	@Role(ROLE.TEACHER)
+	@Roles(ROLE.TEACHER)
 	@Post()
 	create(@Body() createQuestionDto: CreateQuestionDto) {
 		return this.questionService.create(createQuestionDto);
