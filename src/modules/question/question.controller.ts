@@ -10,11 +10,16 @@ import {
 import { QuestionService } from './question.service';
 import { CreateQuestionDto } from './dto/create-question.dto';
 import { UpdateQuestionDto } from './dto/update-question.dto';
+import { Role } from '@common/decorators/Role.decorator';
+import { ROLE } from '@common/enums';
+import { ResponseItem } from './dto/ResponseItem.dto';
+import { Question } from './entities/question.entity';
 
 @Controller('question')
 export class QuestionController {
 	constructor(private readonly questionService: QuestionService) {}
 
+	@Role(ROLE.TEACHER)
 	@Post()
 	create(@Body() createQuestionDto: CreateQuestionDto) {
 		return this.questionService.create(createQuestionDto);
@@ -34,12 +39,17 @@ export class QuestionController {
 	update(
 		@Param('id') id: string,
 		@Body() updateQuestionDto: UpdateQuestionDto
-	) {
+	): Promise<ResponseItem<Question>> {
 		return this.questionService.update(id, updateQuestionDto);
 	}
 
 	@Delete(':id')
-	remove(@Param('id') id: string) {
+	remove(@Param('id') id: string): Promise<ResponseItem<Question>> {
 		return this.questionService.remove(id);
 	}
+
+	// @Delete(':id')
+	// remove(@Param('id') id: string) {
+	// 	return this.questionService.deleteQues(id);
+	// }
 }
