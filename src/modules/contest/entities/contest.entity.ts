@@ -19,16 +19,15 @@ export class Contest {
 	@Column()
 	contestName: string;
 
-
 	@Column({ default: true })
 	isLoading: boolean;
 
 	@ManyToMany(() => User, (user) => user.contest)
-	user: User;
+	user: User[];
 
 	@OneToMany(() => Question, (question) => question.contest)
-	question: Question;
-  
+	question: Question[];
+
 	@DeleteDateColumn()
 	@Exclude()
 	deletedAt: Date;
