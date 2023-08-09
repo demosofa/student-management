@@ -20,7 +20,7 @@ export class Question extends BaseEntity {
 	@Column()
 	desc: string;
 
-	@Column()
+	@Column({ type: 'double precision' })
 	point: number;
 
 	@Column({ nullable: true })
