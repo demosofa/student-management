@@ -49,7 +49,6 @@ export class ContestService {
 		const contest = await this.findOne(contestId);
 		if (!contest.isLoading) throw new RequestTimeoutException();
 		try {
-			console.log(contest);
 			const student = await this.userService.findById(studentId);
 			return this.contestRepo.save({
 				...contest,
