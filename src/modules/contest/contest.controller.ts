@@ -6,25 +6,25 @@ import {
 	Patch,
 	Param,
 	Delete,
-	UseGuards,
 } from '@nestjs/common';
 import { ContestService } from './contest.service';
 import { CreateContestDto } from './dto/create-contest.dto';
 import { UpdateContestDto } from './dto/update-contest.dto';
-import { Roles } from '@common/decorators/Roles.decorator';
 import { ROLE } from '@common/enums';
-import { AuthGuard, RoleGuard } from '@common/guards';
+import { Auth, ReqUser } from '@common/decorators';
+import { AuthUser } from '@common/types/authUser.type';
 
 @Controller('contest')
 export class ContestController {
 	constructor(private readonly contestService: ContestService) {}
 
 	@Post()
-	@Roles(ROLE.TEACHER)
-	@UseGuards(AuthGuard, RoleGuard)
-	async create(@Body() createContestDto: CreateContestDto) {
-		const result = await this.contestService.create(createContestDto);
-		return result;
+	@Auth(ROLE.TEACHER)
+	async create(
+		@ReqUser() reqUser: AuthUser,
+		@Body() createContestDto: CreateContestDto
+	) {
+		return this.contestService.create(reqUser.id, createContestDto);
 	}
 
 	@Get()
@@ -38,15 +38,19 @@ export class ContestController {
 	}
 
 	@Patch(':id')
-	@Roles(ROLE.TEACHER)
-	@UseGuards(AuthGuard, RoleGuard)
+	@Auth(ROLE.TEACHER)
 	update(@Param('id') id: string, @Body() updateContestDto: UpdateContestDto) {
 		return this.contestService.update(id, updateContestDto);
 	}
 
+	@Patch('join/:id')
+	@Auth(ROLE.STUDENT)
+	join(@Param('id') id: string, @ReqUser() reqUser: AuthUser) {
+		return this.contestService.join(id, reqUser.id);
+	}
+
 	@Delete(':id')
-	@Roles(ROLE.TEACHER)
-	@UseGuards(AuthGuard, RoleGuard)
+	@Auth(ROLE.TEACHER)
 	remove(@Param('id') id: string) {
 		return this.contestService.remove(id);
 	}
