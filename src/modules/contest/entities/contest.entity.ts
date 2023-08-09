@@ -8,6 +8,7 @@ import {
 	CreateDateColumn,
 	DeleteDateColumn,
 	Entity,
+	JoinTable,
 	ManyToMany,
 	OneToMany,
 	PrimaryGeneratedColumn,
@@ -25,6 +26,7 @@ export class Contest extends BaseEntity {
 	isLoading: boolean;
 
 	@ManyToMany(() => User, (user) => user.contest)
+	@JoinTable()
 	user: User[];
 
 	@OneToMany(() => Question, (question) => question.contest)

@@ -1,10 +1,16 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import {
+	BadGatewayException,
+	BadRequestException,
+	Injectable,
+	RequestTimeoutException,
+} from '@nestjs/common';
 import { CreateContestDto } from './dto/create-contest.dto';
 import { UpdateContestDto } from './dto/update-contest.dto';
 import { Repository } from 'typeorm';
 import { Contest } from './entities/contest.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { SchedulerRegistry } from '@nestjs/schedule';
+import { UserService } from '@modules/user/user.service';
 
 @Injectable()
 export class ContestService {
@@ -12,23 +18,49 @@ export class ContestService {
 	constructor(
 		@InjectRepository(Contest)
 		private readonly contestRepo: Repository<Contest>,
+		private userService: UserService,
 		private readonly schedulerRegistry: SchedulerRegistry
 	) {}
 
-	async create(createContestDto: CreateContestDto) {
+	async create(teacherId: string, createContestDto: CreateContestDto) {
 		const milliseconds =
 			new Date(createContestDto.closedAt).getTime() - new Date().getTime();
+		const teacher = await this.userService.findById(teacherId);
+		try {
+			const contestCreate = this.contestRepo.create({
+				...createContestDto,
+				user: [teacher],
+			});
+			const result = await this.contestRepo.save(contestCreate);
+			const timeOutName = this.closeEvent + contestCreate.id;
+			const timeout = setTimeout(async () => {
+				await this.contestRepo.update(result.id, { isLoading: false });
+				this.schedulerRegistry.deleteTimeout(timeOutName);
+			}, milliseconds);
 
-		const contestCreate = this.contestRepo.create(createContestDto);
-		const result = await this.contestRepo.save(contestCreate);
-		const timeOutName = this.closeEvent + contestCreate.id;
-		const timeout = setTimeout(async () => {
-			await this.contestRepo.update(result.id, { isLoading: false });
-			this.schedulerRegistry.deleteTimeout(timeOutName);
-		}, milliseconds);
+			this.schedulerRegistry.addTimeout(timeOutName, timeout);
+			return result;
+		} catch (error) {
+			throw new BadGatewayException(error.message);
+		}
+	}
 
-		this.schedulerRegistry.addTimeout(timeOutName, timeout);
-		return result;
+	async join(contestId: string, studentId: string) {
+		const contest = await this.findOne(contestId);
+		if (!contest.isLoading) throw new RequestTimeoutException();
+		try {
+			console.log(contest);
+			const student = await this.userService.findById(studentId);
+			return this.contestRepo.save({
+				...contest,
+				user:
+					contest.user.findIndex((target) => target.id === student.id) != -1
+						? contest.user
+						: contest.user.concat(student),
+			});
+		} catch (error) {
+			throw new BadGatewayException(error.message);
+		}
 	}
 
 	async findAll(
@@ -50,6 +82,7 @@ export class ContestService {
 				question: {
 					answer: true,
 				},
+				user: true,
 			},
 		});
 	}
