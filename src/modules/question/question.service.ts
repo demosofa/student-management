@@ -18,7 +18,6 @@ export class QuestionService {
 	) {}
 	async checkAnswer(id: string, answerId: string) {
 		const question = await this.findOne(id);
-		if (!question) throw new BadRequestException();
 		if (question.right_answer === answerId) {
 			return question.point;
 		} else return 0;
