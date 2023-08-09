@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+	BadRequestException,
+	Injectable,
+	NotFoundException,
+} from '@nestjs/common';
 import { CreateMarkDto } from './dto/create-mark.dto';
 import { Repository } from 'typeorm';
 import { Mark } from './entities/mark.entity';
@@ -31,6 +35,17 @@ export class MarkService {
 			)
 		);
 		const finalMark = marks.reduce((prev, curr) => prev + curr, 0);
+		const isExist = await this.markRepos.findOne({
+			where: {
+				student: {
+					id: studentId,
+				},
+				contest: {
+					id: createMarkDto.contestId,
+				},
+			},
+		});
+		if (isExist) throw new BadRequestException();
 		const student = await this.useService.findById(studentId);
 		const contest = await this.contestService.findOne(createMarkDto.contestId);
 		const mark = this.markRepos.create({
