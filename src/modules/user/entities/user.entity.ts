@@ -6,15 +6,26 @@ import {
 	UpdateDateColumn,
 	ManyToOne,
 	ManyToMany,
+	OneToMany,
 } from 'typeorm';
 import { Role } from '@modules/role/entities/role.entity';
 import { Contest } from '@modules/contest/entities/contest.entity';
 import { IsNotEmpty } from 'class-validator';
+import { Mark } from '@modules/mark/entities/mark.entity';
+import { Exclude } from 'class-transformer';
 
 @Entity()
 export class User {
 	@PrimaryGeneratedColumn('uuid')
 	id: string;
+
+	@IsNotEmpty()
+	@Column({ unique: true })
+	username: string;
+
+	@Exclude()
+	@Column('text')
+	password: string;
 
 	@Column()
 	code: string;
@@ -25,12 +36,8 @@ export class User {
 	@ManyToMany(() => Contest, (contest) => contest.user)
 	contest: Contest[];
 
-	@IsNotEmpty()
-	@Column({ unique: true })
-	username: string;
-
-	@Column('text')
-	password: string;
+	@OneToMany(() => Mark, (mark) => mark.student)
+	mark: Mark[];
 
 	@CreateDateColumn()
 	createdAt: string;

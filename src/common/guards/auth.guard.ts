@@ -19,7 +19,10 @@ export class AuthGuard implements CanActivate {
 	) {}
 
 	async canActivate(context: ExecutionContext): Promise<boolean> {
-		const req = context.switchToHttp().getRequest<Request>();
+		const req = context
+			.switchToHttp()
+			.getRequest<Request & { user: AuthUser }>();
+		if (!req.headers.authorization) throw new UnauthorizedException();
 		const [type, token] = req.headers.authorization.split(' ');
 		if (type != 'Bearer' || !token) throw new UnauthorizedException();
 		try {
@@ -29,7 +32,7 @@ export class AuthGuard implements CanActivate {
 			});
 			const isExist = await this.userService.findById(payload.id);
 			if (!isExist) throw new Error('There is no user');
-			req['user'] = payload;
+			req.user = payload;
 			return true;
 		} catch (error) {
 			throw new UnauthorizedException(error.message);

@@ -17,5 +17,6 @@ import { Role } from '@modules/role/entities/role.entity';
 	],
 	controllers: [ContestController],
 	providers: [ContestService, UserService, RoleService],
+	exports: [ContestService],
 })
 export class ContestModule {}
