@@ -20,8 +20,8 @@ export class ContestController {
 	constructor(private readonly contestService: ContestService) {}
 
 	@Post()
-	// @Role(ROLE.TEACHER)
-	// @UseGuards(AuthGuard, RoleGuard)
+	@Roles(ROLE.TEACHER)
+	@UseGuards(AuthGuard, RoleGuard)
 	async create(@Body() createContestDto: CreateContestDto) {
 		const result = await this.contestService.create(createContestDto);
 		return result;
@@ -45,8 +45,8 @@ export class ContestController {
 	}
 
 	@Delete(':id')
-	// @Role(ROLE.TEACHER)
-	// @UseGuards(AuthGuard, RoleGuard)
+	@Roles(ROLE.TEACHER)
+	@UseGuards(AuthGuard, RoleGuard)
 	remove(@Param('id') id: string) {
 		return this.contestService.remove(id);
 	}
