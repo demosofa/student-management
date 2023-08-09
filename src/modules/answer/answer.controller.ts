@@ -22,36 +22,36 @@ export class AnswerController {
 	constructor(private readonly answerService: AnswerService) {}
 
 	@Post()
-	// @Role(ROLE.TEACHER)
-	// @UseGuards(AuthGuard, RoleGuard)
+	@Roles(ROLE.TEACHER)
+	@UseGuards(AuthGuard, RoleGuard)
 	create(@Body() createAnswerDto: CreateAnswerDto) {
 		return this.answerService.create(createAnswerDto);
 	}
 
 	@Get()
-	// @Role(ROLE.TEACHER)
-	// @UseGuards(AuthGuard, RoleGuard)
+	@Roles(ROLE.TEACHER)
+	@UseGuards(AuthGuard, RoleGuard)
 	findAll(): Promise<Answer[]> {
 		return this.answerService.findAll();
 	}
 
 	@Get(':id')
-	// @Role(ROLE.TEACHER)
-	// @UseGuards(AuthGuard, RoleGuard)
+	@Roles(ROLE.TEACHER)
+	@UseGuards(AuthGuard, RoleGuard)
 	findOne(@Param('id') id: string): Promise<Answer> {
 		return this.answerService.findOne(id);
 	}
 
 	@Patch(':id')
-	// @Role(ROLE.TEACHER)
-	// @UseGuards(AuthGuard, RoleGuard)
+	@Roles(ROLE.TEACHER)
+	@UseGuards(AuthGuard, RoleGuard)
 	update(@Param('id') id: string, @Body() updateAnswerDto: UpdateAnswerDto) {
 		return this.answerService.update(id, updateAnswerDto);
 	}
 
 	@Delete(':id')
-	// @Role(ROLE.TEACHER)
-	// @UseGuards(AuthGuard, RoleGuard)
+	@Roles(ROLE.TEACHER)
+	@UseGuards(AuthGuard, RoleGuard)
 	async remove(@Param('id') id: string) {
 		const check = await this.answerService.remove(id);
 		if (check) return { message: 'Successfully delete answer' };
