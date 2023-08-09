@@ -8,6 +8,8 @@ declare const module: any;
 async function bootstrap() {
 	const app = await NestFactory.create(AppModule);
 
+	app.enableCors();
+
 	app.useGlobalInterceptors(new VoidInterceptor());
 
 	app.useGlobalPipes(
